@@ -3,3 +3,6 @@
 /*.iml
 
 secondstring-20120620.jar
+
+# Maven output
+/target/
