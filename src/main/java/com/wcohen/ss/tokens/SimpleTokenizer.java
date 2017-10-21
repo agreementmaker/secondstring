@@ -38,21 +38,21 @@ public class SimpleTokenizer implements Tokenizer {
      * of alphanumerics, or any single punctuation character.
      */
     public Token[] tokenize(String input) {
-        List tokens = new ArrayList();
+        List<Token> tokens = new ArrayList<Token>();
         int cursor = 0;
         while (cursor < input.length()) {
             char ch = input.charAt(cursor);
             if (Character.isWhitespace(ch)) {
                 cursor++;
             } else if (Character.isLetter(ch)) {
-                StringBuffer buf = new StringBuffer("");
+                StringBuilder buf = new StringBuilder("");
                 while (cursor < input.length() && Character.isLetter(input.charAt(cursor))) {
                     buf.append(input.charAt(cursor));
                     cursor++;
                 }
                 tokens.add(internSomething(buf.toString()));
             } else if (Character.isDigit(ch)) {
-                StringBuffer buf = new StringBuffer("");
+                StringBuilder buf = new StringBuilder("");
                 while (cursor < input.length() && Character.isDigit(input.charAt(cursor))) {
                     buf.append(input.charAt(cursor));
                     cursor++;
@@ -60,7 +60,7 @@ public class SimpleTokenizer implements Tokenizer {
                 tokens.add(internSomething(buf.toString()));
             } else {
                 if (!ignorePunctuation) {
-                    StringBuffer buf = new StringBuffer("");
+                    StringBuilder buf = new StringBuilder("");
                     buf.append(ch);
                     String str = buf.toString();
                     tokens.add(internSomething(str));
@@ -68,7 +68,7 @@ public class SimpleTokenizer implements Tokenizer {
                 cursor++;
             }
         }
-        return (Token[]) tokens.toArray(new BasicToken[tokens.size()]);
+        return tokens.toArray(new Token[tokens.size()]);
     }
 
     private Token internSomething(String s) {
@@ -79,10 +79,10 @@ public class SimpleTokenizer implements Tokenizer {
     // 'interning' strings as tokens
     //
     private int nextId = 0;
-    private Map tokMap = new TreeMap();
+    private Map<String, Token> tokMap = new TreeMap<String, Token>();
 
     public Token intern(String s) {
-        Token tok = (Token) tokMap.get(s);
+        Token tok = tokMap.get(s);
         if (tok == null) {
             tok = new BasicToken(++nextId, s);
             tokMap.put(s, tok);
@@ -96,22 +96,5 @@ public class SimpleTokenizer implements Tokenizer {
 
     public int maxTokenIndex() {
         return nextId;
-    }
-
-    /**
-     * Test routine
-     */
-    public static void main(String[] argv) {
-        SimpleTokenizer tokenizer = DEFAULT_TOKENIZER;
-        int n = 0;
-        for (int i = 0; i < argv.length; i++) {
-            System.out.println("argument " + i + ": '" + argv[i] + "'");
-            Token[] tokens = tokenizer.tokenize(argv[i]);
-            for (int j = 0; j < tokens.length; j++) {
-                System.out.println("token " + (++n) + ":"
-                        + " id=" + tokens[j].getIndex()
-                        + " value: '" + tokens[j].getValue() + "'");
-            }
-        }
     }
 }
